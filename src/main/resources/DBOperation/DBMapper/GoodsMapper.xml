@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DBOperation.DBMapper.GoodsMapper">
+    <insert id="insertNewGoods" useGeneratedKeys="true" keyProperty="goodsID">
+        INSERT INTO goods (name, dateIn, dateOut, colour, type, location, warehouseID)
+        VALUES (#{name},#{dateIn},#{dateOut},#{colour},#{type},#{location},#{warehouseID});
+    </insert>
+    <update id="updateGoodsInf">
+        update goods
+        <set>
+            <if test='name != null'>name=#{name},</if>
+            <if test='dateIn != null'>dateIn=#{dateIn},</if>
+            <if test='dateOut != null'>dateOut=#{dateOut},</if>
+            <if test='colour != null'>colour=#{colour},</if>
+            <if test='type != null'>type=#{type},</if>
+            <if test='location != null'>location=#{location},</if>
+            <if test='warehouseID != null'>warehouseID=#{warehouseID}</if>
+        </set>
+        where goodsID = #{goodsID};
+    </update>
+    <select id="selectAll" resultType="pojo.Goods">
+        SELECT *
+        FROM goods
+        <where>
+            <if test="warehouseID != null">
+                warehouseID = #{warehouseID}
+            </if>
+        </where>
+    </select>
+    <select id="numOfGoodsPerDay" resultType="java.lang.Integer">
+        SELECT count(goodsID)
+        FROM goods
+        <where>
+            <if test="warehouseID != null">
+                AND warehouseID = #{warehouseID}
+            </if>
+            <if test="type != null">
+                AND colour = #{type}
+            </if>
+            <if test="date != null">
+                AND #{date} >= dateIn AND (dateOut IS NULL OR dateOut >= #{date})
+            </if>
+        </where>
+    </select>
+    <select id="selectAllWithType" resultType="pojo.Goods">
+        SELECT *
+        FROM goods
+        <where>
+            <if test="type != null">
+                AND type = #{type}
+            </if>
+            <if test="warehouseID != null">
+                AND warehouseID = #{warehouseID}
+            </if>
+        </where>
+    </select>
+    <select id="numOfGoodsInPlaceOf" resultType="java.lang.Integer">
+        SELECT count(goodsID)
+        FROM goods
+        <where>
+        <if test="warehouseID != null">
+            AND warehouseID = #{warehouseID}
+        </if>
+        <if test="location != null">
+            AND location = #{location}
+        </if>
+        <if test="date != null">
+            AND #{date} >= dateIn AND (dateOut IS NULL OR dateOut >= #{date})
+        </if>
+        </where>
+    </select>
+    <select id="selectAllPosition" resultType="java.lang.String">
+        SELECT distinct location
+        FROM goods
+    </select>
+    <select id="selectByCondition" resultType="pojo.Goods">
+        SELECT *
+        FROM goods
+        <where>
+            <if test="name != null">
+                AND name = #{name}
+            </if>
+            <if test="dateIn != null">
+                AND dateIn = #{dateIn}
+            </if>
+            <if test="dateOut != null">
+                AND dateOut = #{dateOut}
+            </if>
+            <if test="colour != null">
+                AND colour = #{colour}
+            </if>
+            <if test="location != null">
+                AND location = #{location}
+            </if>
+            <if test="warehouseID != null">
+                AND warehouseID = #{warehouseID}
+            </if>
+        </where>
+    </select>
+</mapper>

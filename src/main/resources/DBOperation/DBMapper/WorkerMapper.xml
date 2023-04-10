@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DBOperation.DBMapper.WorkerMapper">
+    <insert id="addNewWorker" useGeneratedKeys="true" keyProperty="uuid">
+        INSERT INTO worker (accountName, password, salary, workingPlace)
+        VALUES (#{accountName},#{password},#{salary},#{workingPlace});
+    </insert>
+    <update id="updateWorkerINF">
+        UPDATE worker
+        <set>
+            <if test='workerName != null and workerName != ""'>workerName=#{workerName},</if>
+            <if test='gender != null and gender != ""'>gender=#{gender},</if>
+            <if test='tel != null and tel != ""'>tel=#{tel},</if>
+            <if test='email != null and email != ""'>email=#{email},</if>
+            <if test='salary != null and salary != ""'>salary=#{salary},</if>
+            <if test='workingPlace != null and workingPlace != ""'>workingPlace=#{workingPlace}</if>
+        </set>
+        where uuid = #{uuid}
+    </update>
+    <select id="checkWorkerAccount" resultType="pojo.Worker">
+        SELECT uuid, accountName,workerName, gender, tel, email, salary, workingPlace
+        FROM worker
+        WHERE accountName = #{username} AND password = #{password};
+    </select>
+    <select id="isWorker" resultType="pojo.Worker">
+        SELECT uuid
+        FROM worker
+        WHERE accountName = #{accountName};
+    </select>
+    <select id="getWorkerINF" resultType="pojo.Worker">
+        SELECT uuid,accountName,workerName,gender,tel,email,salary,workingPlace
+        FROM worker
+        WHERE uuid = #{uuid};
+    </select>
+    <select id="getAccountName" resultType="java.lang.String">
+        SELECT accountName
+        FROM worker
+        WHERE uuid = #{uuid};
+    </select>
+
+
+</mapper>
